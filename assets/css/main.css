@@ -180,13 +180,14 @@ footer p{
 }
 
 .mk-favicon img{
-    height: 22px;
+    height: 16px;
+    margin-top: -3px;
 }
 
 .mk-title{
     -webkit-mask-image: linear-gradient(to right, #000, #000, 200px, transparent);
     height: 26px;
-    left: 32px;
+    left: 26px;
     top: 4px;
     line-height: 26px;
     padding: 0;
