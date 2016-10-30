@@ -27,6 +27,7 @@ class Html_parse_lib {
         if (!empty($html_content))
         {
             $titles = null;
+            $img_path = constant("APPPATH").'../tmp/icons/';
             preg_match("/<title>(.*)<\/title>/i", $html_content, $titles);
             !is_null($titles) && !empty($titles) && ($this->title = $titles[1]);
 
@@ -37,8 +38,13 @@ class Html_parse_lib {
             $icon_name      = preg_replace('/:|\//', '_', $icon_path);
             $icon_full_name = $icon_name.'.ico';
 
-            @file_put_contents(constant("APPPATH").'../tmp/icons/'.$icon_full_name, $icon_img) > 0 && ($this->icon = '/tmp/icons/'.$icon_full_name);
-            $cmd_str = 'wkhtmltoimage --width 1024 --height 600 --quality 1 '.$this->url.' '.constant("APPPATH").'../tmp/icons/'.$icon_name.'.png';
+            @file_put_contents($img_path.$icon_full_name, $icon_img) > 0 &&
+            (image_type_to_mime_type(exif_imagetype($img_path.$icon_full_name)) == 'image/vnd.microsoft.icon') &&
+            ($this->icon = '/tmp/icons/'.$icon_full_name);
+            empty($this->icon) && ($icon_img = $this->CI->http_lib->get('http://g.soz.im/'.$icon_path)) &&
+            @file_put_contents($img_path.$icon_full_name, $icon_img) > 0 &&
+            ($this->icon = '/tmp/icons/'.$icon_full_name);
+            $cmd_str = 'wkhtmltoimage --width 1024 --height 600 --quality 1 '.$this->url.' '.$img_path.$icon_name.'.png';
             @system($cmd_str, $result);
             $capture_img = '/tmp/icons/'.$icon_name.'.png';
             file_exists(constant("APPPATH").'..'.$capture_img) && $this->screen_capture = $capture_img;
