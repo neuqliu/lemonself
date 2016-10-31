@@ -29,6 +29,13 @@
             }
         });
 
+        $("input[name=newMarkUrl]").on("input", function(){
+            var curVal = $(this).val();
+            if (!urlRex.test(curVal)) {
+                $(this).val("http://" + curVal);
+            }
+        });
+
         $("#userBind").on("click", function(){
             var mobile = $("input[name=mobile]").val().trim();
             if (!mobileRex.test(mobile)) {
