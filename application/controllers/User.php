@@ -32,8 +32,8 @@ class User extends MY_Controller {
                 }
                 elseif ($user_info['mobile'] == $mobile)
                 {
-                    $this->user_model->update_row(array('cookie_uuid' => $user_info['cookie_uuid'].','.$this->user_id), array('mobile' => $mobile)) &&
-                    ($this->set_user_id($mobile)) && ($this->result['code'] = '200');
+                    ($this->set_user_id($mobile)) && ($this->result['code'] = '200') &&
+                    $this->user_model->update_row(array('cookie_uuid' => ''), array('mobile' => $mobile));
                 }
                 else
                 {
