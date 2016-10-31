@@ -21,7 +21,7 @@ class Html_parse_lib {
 
     private function parse_base_info()
     {
-        set_time_limit(60);
+        set_time_limit(90);
         $html_content = $this->CI->http_lib->get($this->url);
 
         if (!empty($html_content))

@@ -13,7 +13,7 @@
                 layer.msg("URL不合法，必须以http/https开头");
                 return false;
             } else {
-                layer.load(1, {time: 60000, shade: [0.8, '#393D49']});
+                layer.load(1, {time: 90000, shade: [0.8, '#393D49']});
                 var paramsData = {"url": markUrl};
                 $.post("/user/mark/add", appendCsrf(paramsData), function(data){
                     $("input[name=newMarkUrl]").val("");
