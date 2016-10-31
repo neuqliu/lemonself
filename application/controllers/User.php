@@ -18,7 +18,8 @@ class User extends MY_Controller {
             $mobile = $this->input->post('mobile', true);
             if ($mobile)
             {
-                $user_info = $this->user_model->get_by(array($this->db_uid => $this->user_id), 'mobile');
+                $user_info = $this->user_model->get_by(array('mobile' => $mobile), 'mobile,cookie_uuid');
+                count($user_info) == 0 && $user_info = $this->user_model->get_by(array($this->db_uid => $this->user_id), 'mobile,cookie_uuid');
                 if (is_null($user_info['mobile']) || empty($user_info['mobile']))
                 {
                     $this->user_model->update_row(array('mobile' => $mobile), array($this->db_uid => $this->user_id)) &&
@@ -27,6 +28,7 @@ class User extends MY_Controller {
                 }
                 elseif ($user_info['mobile'] == $mobile)
                 {
+                    $this->user_model->update_row(array('cookie_uuid' => $user_info['mobile'].','.$this->user_id), array('mobile' => $mobile)) &&
                     ($this->set_user_id($mobile)) && ($this->result['code'] = '200');
                 }
                 else
