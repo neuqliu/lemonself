@@ -6,6 +6,7 @@
     <title>柠檬本色</title>
 <?php endif; ?>
 <meta name="description" content="柠檬本色">
+<meta name="keywords" content="柠檬本色,书签,mark,book,柠檬">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="renderer" content="webkit">
 <meta http-equiv="Cache-Control" content="no-siteapp" />
