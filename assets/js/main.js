@@ -93,6 +93,11 @@
                 $("#bookMarks").html(marksHtml);
             }
         });
+
+        // 监听窗口大小变化
+        $(window).on("resize", function(){
+            $(".mk-thumb").height($(".mk-thumb > img:eq(0)").height())
+        });
     }
 
     function getMarkHtml($mark)
