@@ -28,7 +28,7 @@ class Html_parse_lib {
         {
             $titles = null;
             $img_path = constant("APPPATH").'../tmp/icons/';
-            preg_match("/<title>(.*)<\/title>/i", $html_content, $titles);
+            preg_match("/<title>(.+)<\/title>/is", $html_content, $titles);
             !is_null($titles) && !empty($titles) && ($this->title = $titles[1]);
 
             $url_info       = parse_url($this->url);
