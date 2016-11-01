@@ -106,7 +106,7 @@ class User extends MY_Controller {
                 }
 
                 $user_mark_db = $this->user_mark_model->get_by(array('mark_uuid' => $mark_uuid, 'user_id' => $this->user_id), 'user_id,mark_uuid,url,icon,screen_capture,title,is_delete');
-                if ($create_mark && count($user_mark_db) == 0)
+                if (($create_mark || count($book_mark) > 0) && count($user_mark_db) == 0)
                 {
                     $user_mark = array(
                         'user_id'        => $this->user_id,
