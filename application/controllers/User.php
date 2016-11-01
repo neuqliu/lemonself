@@ -59,10 +59,19 @@ class User extends MY_Controller {
         {
             $this->json_result_init();
 
-            if (!is_null($this->user_id))
+            $mark_ids = $this->input->post('mark_ids', true);
+            if (is_null($mark_ids))
             {
-                $this->result['marks'] = $this->user_mark_model->get_all(array('user_id' => $this->user_id, 'is_delete' => 0),
-                    'mark_uuid,url,icon,title,click_count,screen_capture', 'index ASC, updated_at DESC');
+                if (!is_null($this->user_id))
+                {
+                    $this->result['marks'] = $this->user_mark_model->get_all(array('user_id' => $this->user_id, 'is_delete' => 0),
+                        'mark_uuid,url,icon,title,click_count,screen_capture', 'index ASC, updated_at DESC');
+                    $this->result['code'] = '200';
+                }
+            }
+            else
+            {
+                $this->result['marks'] = $this->user_mark_model->get_all_in('mark_uuid', $mark_ids, 'mark_uuid,url,icon,title,click_count,screen_capture', 'index ASC, updated_at DESC');
                 $this->result['code'] = '200';
             }
 

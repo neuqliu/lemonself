@@ -2,7 +2,9 @@
     var urlRex     = /((http|https):\/\/)([a-zA-Z0-9_-]+\.)*/,
     mobileRex      = /^1((3|5|7|8){1}\d{1}|70)\d{8}$/,
     defaultIcon    = "/tmp/icons/lemonself.ico",
-    defaultCapture = "/tmp/icons/lemonself.png";
+    defaultTitle   = "信息处理中...",
+    defaultCapture = "/tmp/icons/lemonself.png",
+    updateQueue    = [];
 
     $(function() {
         init();
@@ -98,6 +100,7 @@
                     marksHtml += getMarkHtml(mark);
                 }
                 $("#bookMarks").html(marksHtml);
+                setInterval(updateMarkInfo, 5000);
             }
         });
 
@@ -107,14 +110,33 @@
         });
     }
 
-    function getMarkHtml($mark)
+    function updateMarkInfo()
     {
-        return '<li>' +
-                    '<a class="lm-mark" target="_blank" href="/user/open?url=' + $mark['url'] + '" title="' + $mark['title'] + '">' +
-                        '<div class="mk-favicon"><img src="' + ($mark['icon'] || defaultIcon) + '"></div>' +
-                        '<div class="mk-title">' + $mark['title'] + '</div>' +
-                        '<div class="lm-icon-close mk-x" mark-id="' + $mark['mark_uuid'] + '"></div>' +
-                        '<div class="mk-thumb"><img src="' + ($mark['screen_capture'] || defaultCapture) + '" /></div>' +
+        var paramsData = {'mark_ids': updateQueue};
+        $.post("/user/marks", appendCsrf(paramsData), function(data){
+            updateCsrf(data.csrf);
+            if ("200" == data.code) {
+                for(var index in data.marks) {
+                    var mark = data.marks[index];
+                    var markId = "#li" + mark['mark_uuid'];
+                    $(markId + " > a").attr("title", mark['title'] || defaultTitle);
+                    $(markId + " > a > .mk-favicon > img").attr("src", mark['icon'] || defaultIcon);
+                    $(markId + " > a > .mk-title").text(mark['title'] || defaultTitle);
+                    $(markId + " > a > .mk-thumb > img").attr("src", mark['screen_capture'] || defaultCapture);
+                }
+            }
+        });
+    }
+
+    function getMarkHtml(mark)
+    {
+        mark['screen_capture'] == "" && updateQueue.push(mark['mark_uuid']);
+        return '<li id="li' +  mark['mark_uuid'] + '">' +
+                    '<a class="lm-mark" target="_blank" href="/user/open?url=' + mark['url'] + '" title="' + (mark['title'] || defaultTitle) + '">' +
+                        '<div class="mk-favicon"><img src="' + (mark['icon'] || defaultIcon) + '"></div>' +
+                        '<div class="mk-title">' + (mark['title'] || defaultTitle) + '</div>' +
+                        '<div class="lm-icon-close mk-x" mark-id="' + mark['mark_uuid'] + '"></div>' +
+                        '<div class="mk-thumb"><img src="' + (mark['screen_capture'] || defaultCapture) + '" /></div>' +
                     '</a>' +
                 '</li>';
     }

@@ -16,14 +16,14 @@ class Html_parse_lib {
 
         $this->url = $url;
 
-        $this->parse_base_info();
+        $this->init();
     }
 
-    private function parse_base_info()
+    public function parse_base_info()
     {
-        set_time_limit(90);
-        $html_content = $this->CI->http_lib->get($this->url);
+        set_time_limit(120);
 
+        $html_content = $this->CI->http_lib->get($this->url);
         if (!empty($html_content))
         {
             $titles = null;
@@ -48,6 +48,20 @@ class Html_parse_lib {
             @system($cmd_str, $result);
             $capture_img = '/tmp/icons/'.$icon_name.'.png';
             file_exists(constant("APPPATH").'..'.$capture_img) && $this->screen_capture = $capture_img;
+        }
+    }
+
+    private function init()
+    {
+        if (!empty($this->url) && $this->url != '/')
+        {
+            $mark_uuid = md5($this->url);
+            $update_queue = array(
+                'mark_uuid' => $mark_uuid,
+                'mark_url'  => $this->url
+            );
+
+            !$this->CI->update_queue_model->is_exist(array('mark_uuid' => $mark_uuid)) && $this->CI->update_queue_model->insert($update_queue);
         }
     }
 
