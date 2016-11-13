@@ -10,20 +10,21 @@
         init();
 
         $("#sbumitBookMarks").on("click", function(){
-            var markUrl = $("input[name=newMarkUrl]").val().trim();
+            var markUrl        = $("input[name=newMarkUrl]").val().trim(),
+            markClassification = $("select[name=markClassification]").val();
             if (!urlRex.test(markUrl)) {
                 layer.msg("URL不合法，必须以http/https开头");
                 return false;
             } else {
                 layer.load(1, {time: 90000, shade: [0.8, '#393D49']});
-                var paramsData = {"url": markUrl};
+                var paramsData = {"url": markUrl, 'classification': markClassification};
                 $.post("/user/mark/add", appendCsrf(paramsData), function(data){
                     $("input[name=newMarkUrl]").val("");
                     layer.closeAll();
                     updateCsrf(data.csrf);
                     if ("200" == data.code) {
                         var markHtml = getMarkHtml(data.mark);
-                        $("#bookMarks").prepend(markHtml);
+                        $("#myBookMarks").prepend(markHtml);
                     } else {
                         layer.msg(data.msg);
                     }
@@ -59,7 +60,7 @@
             }
         });
 
-        var sortable = new Sortable($("#bookMarks")[0], {
+        var sortable = new Sortable($("#myBookMarks")[0], {
             animation: 400
         });
 
@@ -96,10 +97,16 @@
             if ("200" == data.code) {
                 var marksHtml = "";
                 for(var index in data.marks) {
-                    var mark = data.marks[index];
-                    marksHtml += getMarkHtml(mark);
+                    marksHtml += getMarkHtml(data.marks[index]);
                 }
-                $("#bookMarks").html(marksHtml);
+                $("#myBookMarks").html(marksHtml);
+
+                marksHtml = "";
+                for(var index in data.system_marks) {
+                    marksHtml += getSystemMarkHtml(data.system_marks[index]);
+                }
+                $("#systemBookMarks").html(marksHtml);
+
                 setInterval(updateMarkInfo, 5000);
             }
         });
@@ -131,6 +138,19 @@
     function getMarkHtml(mark)
     {
         mark['screen_capture'] == "" && updateQueue.push(mark['mark_uuid']);
+        return '<li id="li' +  mark['mark_uuid'] + '">' +
+                    '<a class="lm-mark" target="_blank" href="/user/open?url=' + mark['url'] + '" title="' + (mark['title'] || defaultTitle) + '">' +
+                        '<div class="mk-favicon"><img src="' + (mark['icon'] || defaultIcon) + '"></div>' +
+                        '<div class="mk-title">' + (mark['title'] || defaultTitle) + '</div>' +
+                        '<div class="lm-icon-close mk-x" mark-id="' + mark['mark_uuid'] + '"></div>' +
+                        '<div class="mk-thumb"><img src="' + (mark['screen_capture'] || defaultCapture) + '" /></div>' +
+                    '</a>' +
+                '</li>';
+    }
+
+    function getSystemMarkHtml(mark)
+    {
+        mark['screen_capture'] == "" && updateQueue.push(mark['uuid']);
         return '<li id="li' +  mark['mark_uuid'] + '">' +
                     '<a class="lm-mark" target="_blank" href="/user/open?url=' + mark['url'] + '" title="' + (mark['title'] || defaultTitle) + '">' +
                         '<div class="mk-favicon"><img src="' + (mark['icon'] || defaultIcon) + '"></div>' +

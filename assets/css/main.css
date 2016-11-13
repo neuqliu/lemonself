@@ -240,3 +240,15 @@ footer p{
 .lm-fixed-top + header{
     margin-top: 47px;
 }
+
+.am-tabs{
+    margin: 0;
+}
+
+.lm-marks-tab{
+    padding: 0 !important;
+}
+
+header select{
+    margin-top: 8px;
+}

@@ -31,11 +31,16 @@
     <input type="hidden" id="csrfName" value="<?= isset($csrf) ? $csrf['name'] : ''; ?>">
     <input type="hidden" id="csrfHash" value="<?= isset($csrf) ? $csrf['hash'] : ''; ?>">
     <div class="am-modal am-modal-prompt" tabindex="-1" id="addBookMarksInput">
-        <div class="am-modal-dialog">
+        <div class="am-modal-dialog am-form">
             <div class="am-modal-hd">添加新书签</div>
             <div class="am-modal-bd">
                 粘贴完整URL(以http://或https://开头)
                 <input type="text" class="am-modal-prompt-input" placeholder="书签地址" name="newMarkUrl" value="">
+                <select class="am-modal-prompt-select" name="markClassification">
+                    <?php foreach ($GLOBALS['mark_classification'] as $classification): ?>
+                        <option value="<?= $classification ?>"><?= $classification ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="am-modal-footer">
                 <span class="am-modal-btn" data-am-modal-cancel>取消</span>

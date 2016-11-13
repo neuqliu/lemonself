@@ -60,18 +60,20 @@ class User extends MY_Controller {
             $this->json_result_init();
 
             $mark_ids = $this->input->post('mark_ids', true);
+            $fields   = 'mark_uuid,url,icon,title,click_count,screen_capture';
+            $order_by = 'index ASC, updated_at DESC';
             if (is_null($mark_ids))
             {
+                $this->result['system_marks'] = $this->book_mark_model->get_all(array('is_recommend' => 1), 'uuid,url,icon,title,click_count,screen_capture', 'updated_at DESC');
+                $this->result['code'] = '200';
                 if (!is_null($this->user_id))
                 {
-                    $this->result['marks'] = $this->user_mark_model->get_all(array('user_id' => $this->user_id, 'is_delete' => 0),
-                        'mark_uuid,url,icon,title,click_count,screen_capture', 'index ASC, updated_at DESC');
-                    $this->result['code'] = '200';
+                    $this->result['marks'] = $this->user_mark_model->get_all(array('user_id' => $this->user_id, 'is_delete' => 0), $fields, $order_by);
                 }
             }
             else
             {
-                $this->result['marks'] = $this->user_mark_model->get_all_in('mark_uuid', $mark_ids, 'mark_uuid,url,icon,title,click_count,screen_capture', 'index ASC, updated_at DESC');
+                $this->result['marks'] = $this->user_mark_model->get_all_in('mark_uuid', $mark_ids, $fields, $order_by);
                 $this->result['code'] = '200';
             }
 
@@ -91,7 +93,7 @@ class User extends MY_Controller {
 
             if (!is_null($this->user_id))
             {
-                $params = $this->input->post(array('url', 'cookie_uuid'), true);
+                $params = $this->input->post(array('url', 'classification', 'cookie_uuid'), true);
 
                 if (!$this->user_model->is_exist($this->user_id))
                 {
@@ -109,7 +111,8 @@ class User extends MY_Controller {
                         'url'            => $html_parse->url,
                         'icon'           => $html_parse->icon,
                         'screen_capture' => $html_parse->screen_capture,
-                        'title'          => $html_parse->title
+                        'title'          => $html_parse->title,
+                        'classification' => $params['classification']
                     );
                     $create_mark = $this->book_mark_model->insert($book_mark);
                 }
@@ -123,7 +126,8 @@ class User extends MY_Controller {
                         'url'            => $book_mark['url'],
                         'icon'           => $book_mark['icon'],
                         'screen_capture' => $book_mark['screen_capture'],
-                        'title'          => $book_mark['title']
+                        'title'          => $book_mark['title'],
+                        'classification' => $params['classification']
                     );
                     $this->user_mark_model->insert($user_mark) && ($this->result['code'] = '200') &&
                     ($this->result['mark'] = $user_mark) && $this->book_mark_model->feild_pp('mark_count', array('uuid' => $mark_uuid)) &&
