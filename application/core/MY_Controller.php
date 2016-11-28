@@ -18,19 +18,21 @@ class MY_Controller extends CI_Controller {
         $this->user_id   = $this->session->userdata('user_id');
         $this->crsf_name = $this->security->get_csrf_token_name();
         $this->crsf_hash = $this->security->get_csrf_hash();
+        $this->db_uid    = $this->common_lib->cur_dbuid($this->user_id);
 
         $this->result['csrf'] = array('name' => $this->crsf_name, 'hash' => $this->crsf_hash);
 
-        $this->data['csrf']   = array('name' => $this->crsf_name, 'hash' => $this->crsf_hash);
-
-        strlen($this->user_id) === 11 ? ($this->db_uid = 'mobile') : ($this->db_uid = 'cookie_uuid');
+        $this->data['csrf']      = array('name' => $this->crsf_name, 'hash' => $this->crsf_hash);
+        $this->data['user_info'] = $this->session->userdata('user_info');
     }
 
-    public function set_user_id($val)
+    public function update_userinfo($info)
     {
-        $this->session->set_userdata('user_id', $val);
-        $this->user_id = $val;
-        strlen($val) === 11 ? ($this->db_uid = 'mobile') : ($this->db_uid = 'cookie_uuid');
+        $this->session->set_userdata('user_id', $info['openid']);
+        $this->session->set_userdata('user_info', $info);
+        $this->user_id = $info['openid'];
+        $this->db_uid  = $this->common_lib->cur_dbuid($this->user_id);
+
         return  true;
     }
 

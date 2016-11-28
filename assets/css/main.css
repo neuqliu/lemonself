@@ -233,7 +233,7 @@ footer p{
 .lm-fixed-top{
     position: fixed;
     width: 100%;
-    z-index: 9;
+    z-index: 999;
     top: 0;
 }
 
@@ -251,4 +251,12 @@ footer p{
 
 header select{
     margin-top: 8px;
+}
+
+.lm-qq-login{
+    line-height: 40px;
+}
+
+.lm-qq-login img{
+    max-height: 40px;
 }

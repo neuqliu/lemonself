@@ -12,12 +12,7 @@ class User_model extends MY_Model {
 
     public function is_exist($user_id)
     {
-        if (strlen($user_id) === 11)
-        {
-            return parent::is_exist(array('mobile' => $user_id));
-        }
-
-        return parent::is_exist(array('cookie_uuid' => $user_id));
+        return parent::is_exist(array($this->common_lib->cur_dbuid($user_id) => $user_id));
     }
 
 }

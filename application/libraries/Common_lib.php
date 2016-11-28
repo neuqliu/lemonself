@@ -24,6 +24,15 @@ class Common_lib {
     }
 
     /**
+     * 生成utmp_id
+     * 返回字符串
+     */
+    public function utmp_id()
+    {
+        return 'LMTU'.$this->uuid(28);
+    }
+
+    /**
      * 验证所有参数都不能为空
      * 返回bool
      */
@@ -39,6 +48,27 @@ class Common_lib {
         return true;
     }
 
+    /**
+     * 验证uid是否是openid
+     * 返回bool
+     */
+    public function is_openid($uid = null)
+    {
+        $userid = is_null($uid) ? $this->CI->session->userdata('user_id') : $uid;
+
+        return !(mb_strpos($userid, 'LMTU') === 0);
+    }
+
+    /**
+     * 获取当前userid的类型
+     * 返回string
+     */
+    public function cur_dbuid($uid = null)
+    {
+        $userid = is_null($uid) ? $this->CI->session->userdata('user_id') : $uid;
+
+        return $this->is_openid($userid) ? 'openid' : 'cookie_uuid';
+    }
 
     // 格式化
     public function money($money)

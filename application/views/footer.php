@@ -6,5 +6,5 @@
 </div>
 
 <footer>
-    <p class="am-text-center am-padding-left">© 2016 彼岸无痕</p>
+    <p class="am-text-center am-padding-left">© 2016 彼岸无痕 京ICP备16059952号-1</p>
 </footer>

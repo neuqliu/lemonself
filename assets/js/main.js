@@ -23,6 +23,7 @@
                     layer.closeAll();
                     updateCsrf(data.csrf);
                     if ("200" == data.code) {
+                        layer.msg("添加书签成功");
                         var markHtml = getMarkHtml(data.mark);
                         $("#myBookMarks").prepend(markHtml);
                     } else {
@@ -39,16 +40,20 @@
             }
         });
 
-        $("#userBind").on("click", function(){
-            var mobile = $("input[name=mobile]").val().trim();
-            if (!mobileRex.test(mobile)) {
-                layer.msg("手机号不合法，请检查后再试试");
-                return false;
-            } else {
-                layer.load(1, {time: 15000, shade: [0.8, '#393D49']});
-                var paramsData = {"mobile": mobile};
+        $("#qqLoginBtn").length && window.QC && QC.Login({
+            btnId:"qqLoginBtn",
+            scope:"get_user_info"
+        }, function(reqData, opts){
+            $("#qqLoginBtn").html('<img src="' + reqData.figureurl_qq_1 + '" title="' + reqData.nickname + '" alt="' + reqData.nickname + '">');
+            QC.Login.check() && QC.Login.getMe(function(openId, accessToken){
+                var paramsData = {
+                    "openid": openId,
+                    "nickname": reqData.nickname,
+                    "gender": reqData.gender,
+                    "figureurl_qq_1": reqData.figureurl_qq_1,
+                    "figureurl_qq_2": reqData.figureurl_qq_2
+                };
                 $.post("/user/login", appendCsrf(paramsData), function(data){
-                    layer.closeAll();
                     updateCsrf(data.csrf);
                     if ("200" == data.code) {
                         layer.msg('登录成功');
@@ -57,7 +62,10 @@
                         layer.msg(data.msg);
                     }
                 });
-            }
+                console.log("openId: " + openId + "accessToken: " + accessToken);
+            })
+        }, function(opts){
+            location.href = "/";
         });
 
         var sortable = new Sortable($("#myBookMarks")[0], {
@@ -89,12 +97,22 @@
         });
     });
 
+    function update_tab(markLength)
+    {
+        if (markLength > 0) {
+            $("#lmTabs li.lm-my-tab > a").trigger("click");
+        } else {
+            $("#lmTabs li.lm-system-tab > a").trigger("click");
+        }
+    }
+
     function init()
     {
         var paramsData = {};
         $.post("/user/marks", appendCsrf(paramsData), function(data){
             updateCsrf(data.csrf);
             if ("200" == data.code) {
+                update_tab(data.marks.length);
                 var marksHtml = "";
                 for(var index in data.marks) {
                     marksHtml += getMarkHtml(data.marks[index]);

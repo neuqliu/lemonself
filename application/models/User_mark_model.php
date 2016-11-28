@@ -14,8 +14,7 @@ class User_mark_model extends MY_Model {
     {
         if (parent::insert($user_mark))
         {
-            strlen($user_mark['user_id']) === 11 ? ($u_id = 'mobile') : ($u_id = 'cookie_uuid');
-            return $this->user_model->feild_pp('mark_count', array($u_id => $user_mark['user_id']));
+            return $this->user_model->feild_pp('mark_count', array($this->common_lib->cur_dbuid($user_mark['user_id']) => $user_mark['user_id']));
         }
 
         return false;

@@ -1,4 +1,4 @@
-<?php if (strlen($this->session->userdata('user_id')) != 11): ?>
+<?php if (!$this->common_lib->is_openid()): ?>
     <div class="am-text-center am-alert am-alert-warning lm-fixed-top" data-am-alert>
         <button type="button" class="am-close">&times;</button>
         <p>登录后可以永久保存数据，否则数据不能在多台设备共享，并且极易丢失！</p>
@@ -16,10 +16,10 @@
                     <a class="am-icon-search lm-button-search" href="javascript:;"></a>
                 </li> -->
                 <li>
-                    <?php if (strlen($this->session->userdata('user_id')) == 11): ?>
-                        <p class="am-icon-mobile-phone mobile">&nbsp;<?= $this->session->userdata('user_id') ?></p>
+                    <?php if ($this->common_lib->is_openid()): ?>
+                        <span class="lm-qq-login"><img src="<?= $user_info['figureurl_qq_1'] ?>" title="<?= $user_info['nickname'] ?>" alt="<?= $user_info['nickname'] ?>"></span>
                     <?php else: ?>
-                        <a title="绑定手机号，可以永久保存书签数据" class="am-icon-street-view lm-button lm-button-login" href="javascript:;" data-am-modal="{target: '#loginBtnModal', closeViaDimmer: 0}">&nbsp;登录</a>
+                        <span id="qqLoginBtn" class="lm-qq-login"></span>
                     <?php endif; ?>
                 </li>
                 <li>

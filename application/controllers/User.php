@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class User extends MY_Controller {
 
@@ -15,25 +14,26 @@ class User extends MY_Controller {
         {
             $this->json_result_init();
 
-            $mobile = $this->input->post('mobile', true);
-            if ($mobile)
+            $info   = $this->input->post(array('openid', 'nickname', 'gender', 'figureurl_qq_1', 'figureurl_qq_2'), true);
+            $openid = $info['openid'];
+            if ($openid)
             {
-                $user_info = $this->user_model->get_by(array('mobile' => $mobile), 'mobile,cookie_uuid');
-                count($user_info) == 0 && $user_info = $this->user_model->get_by(array($this->db_uid => $this->user_id), 'mobile,cookie_uuid');
+                $user_info = $this->user_model->get_by(array('openid' => $openid), 'openid,cookie_uuid');
+                count($user_info) == 0 && $user_info = $this->user_model->get_by(array($this->db_uid => $this->user_id), 'openid,cookie_uuid');
                 if (count($user_info) == 0)
                 {
-                    $this->user_model->insert(array($this->db_uid => $this->user_id)) && ($this->set_user_id($mobile)) && ($this->result['code'] = '200');
+                    $this->user_model->insert($info) && ($this->update_userinfo($info)) && ($this->result['code'] = '200');
                 }
-                elseif (is_null($user_info['mobile']) || empty($user_info['mobile']))
+                elseif (is_null($user_info['openid']) || empty($user_info['openid']))
                 {
-                    $this->user_model->update_row(array('mobile' => $mobile), array($this->db_uid => $this->user_id)) &&
-                    $this->user_mark_model->update_row(array('user_id' => $mobile), array('user_id' => $this->user_id)) &&
-                    ($this->set_user_id($mobile)) && ($this->result['code'] = '200');
+                    $this->user_model->update_row($info, array($this->db_uid => $this->user_id)) &&
+                    $this->user_mark_model->update_row(array('user_id' => $openid), array('user_id' => $this->user_id)) &&
+                    ($this->update_userinfo($info)) && ($this->result['code'] = '200');
                 }
-                elseif ($user_info['mobile'] == $mobile)
+                elseif ($user_info['openid'] == $openid)
                 {
-                    ($this->set_user_id($mobile)) && ($this->result['code'] = '200') &&
-                    $this->user_model->update_row(array('cookie_uuid' => ''), array('mobile' => $mobile));
+                    ($this->update_userinfo($info)) && ($this->result['code'] = '200') &&
+                    $this->user_model->update_row($info, array('openid' => $openid));
                 }
                 else
                 {
@@ -110,8 +110,8 @@ class User extends MY_Controller {
                         'uuid'           => $mark_uuid,
                         'url'            => $html_parse->url,
                         'icon'           => $html_parse->icon,
-                        'screen_capture' => $html_parse->screen_capture,
                         'title'          => $html_parse->title,
+                        'screen_capture' => $html_parse->screen_capture,
                         'classification' => $params['classification']
                     );
                     $create_mark = $this->book_mark_model->insert($book_mark);
