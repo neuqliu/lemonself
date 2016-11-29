@@ -103,6 +103,7 @@ class User extends MY_Controller {
                 $mark_uuid   =  md5($params['url']);
                 $create_mark = false;
                 $book_mark   = $this->book_mark_model->get_by(array('uuid' => $mark_uuid), 'uuid,url,icon,title,screen_capture');
+                $this->update_queue_model->insert(array('mark_uuid' => $mark_uuid, 'mark_url'  => $params['url']));
                 if (count($book_mark) == 0)
                 {
                     $html_parse = new Html_parse_lib($params['url']);

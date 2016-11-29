@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js">
 <head>
-    <?php $html_title = '每个人都与众不同'; ?>
+    <?php $html_title = '略有不同'; ?>
     <?php include 'common_head.php'; ?>
 </head>
 <body>

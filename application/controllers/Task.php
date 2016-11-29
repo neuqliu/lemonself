@@ -34,8 +34,8 @@ class Task extends MY_Controller {
                     'screen_capture' => $html_parse->screen_capture,
                     'title'          => $html_parse->title
                 );
-                $this->book_mark_model->update_row($mark_info, array('uuid' => $queue['mark_uuid'])) &&
-                $this->user_mark_model->update_row($mark_info, array('mark_uuid' => $queue['mark_uuid'])) &&
+                $this->book_mark_model->update_row($mark_info, array('uuid' => $queue['mark_uuid']), true) &&
+                $this->user_mark_model->update_row($mark_info, array('mark_uuid' => $queue['mark_uuid']), true) &&
                 $this->update_queue_model->delete_row(array('id' => $queue['id'])) &&
                 $res[$index] = 1;
             }

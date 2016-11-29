@@ -10,6 +10,18 @@ class Update_queue_model extends MY_Model {
         parent::__construct('update_queue');
     }
 
+    public function insert($update_queue)
+    {
+        if (parent::is_exist(array('mark_uuid' => $update_queue['mark_uuid'])))
+        {
+            return parent::update_row(array('status' => 0), array('mark_uuid' => $update_queue['mark_uuid']));
+        }
+        else
+        {
+            return parent::insert($update_queue);
+        }
+    }
+
 }
 
 /* End of file Update_queue_model.php */

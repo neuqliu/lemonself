@@ -125,7 +125,7 @@
                 }
                 $("#systemBookMarks").html(marksHtml);
 
-                setInterval(updateMarkInfo, 5000);
+                setInterval(updateMarkInfo, 10000);
             }
         });
 

@@ -52,8 +52,9 @@ class MY_Model extends CI_Model {
         return $table_data;
     }
 
-    public function update_row($table, $where)
+    public function update_row($table, $where, $is_force = false)
     {
+        $is_force === true && $table['updated_at'] = mdate("%Y-%m-%d %H:%i:%s", time());
         return $this->model_common->update($table, $where);
     }
 
