@@ -73,14 +73,14 @@
             animation: 400
         });
 
-        $(".lm-marks").on("click", ".mk-x", function(){
+        $("#myBookMarks").on("click", ".mk-x", function(){
             var self = $(this);
             layer.confirm('确定删除此书签？', {
                 btn: ['确定','取消'],
                 title: '删除不可恢复'
             }, function(){
                 layer.load(1, {time: 15000, shade: [0.8, '#393D49']});
-                var paramsData = {"m_id": self.attr("mark-id")};
+                var paramsData = {"m_id": self.parent().attr("mark-id")};
                 $.post("/user/mark/delete", appendCsrf(paramsData), function(data){
                     layer.closeAll();
                     updateCsrf(data.csrf);
@@ -96,7 +96,56 @@
             });
             return false;
         });
+
+        var $classificationChosen = $("#classificationChosen");
+        $("#myBookMarks").on({
+            mouseenter:function(){
+                var $mkSelect = $(this).find(".mk-classification");
+                unbindChosen();
+                $mkSelect.html($classificationChosen);
+                $mkSelect.html($classificationChosen); //TODO：暂时还不明白为什么需要调用两遍
+                $classificationChosen.val($mkSelect.attr("selected-classification"));
+                bindChosen();
+            }
+        }, "a.lm-mark");
+
+        $("#myBookMarks").on("change", ".classification-chosen", function(){
+            $(this).parent().attr("selected-classification", $(this).val());
+            layer.load(1, {time: 15000, shade: [0.8, '#393D49']});
+            var paramsData = {"m_id": $(this).parent().parent().attr("mark-id"), "classification": $(this).val()};
+            $.post("/user/mark/update", appendCsrf(paramsData), function(data){
+                layer.closeAll();
+                updateCsrf(data.csrf);
+                "200" != data.code && layer.msg("更新失败请刷新重试");
+            });
+        });
+
+        // 监听书签分组搜索框的回车事件
+        $("#myBookMarks").on("keyup", ".chosen-drop .chosen-search > input", function(e){
+            var text = $(this).val().trim();
+            if(e.keyCode == 13 && $("#classificationChosen option").text().indexOf(text) == -1) {
+                $classificationChosen.append('<option value="'+ text +'" selected="selected">'+ text +'</option>');
+                $classificationChosen.trigger('chosen:updated');
+                $classificationChosen.trigger('change');
+            }
+        });
+
     });
+
+    function unbindChosen()
+    {
+        $("#classificationChosen_chosen").remove();
+    }
+
+    function bindChosen()
+    {
+        $("#classificationChosen").chosen({
+            disable_search: false,
+            placeholder_text_multiple: '选择分组',
+            no_results_text: '回车添加新分组',
+            width: '95%'
+        });
+    }
 
     function update_tab(markLength)
     {
@@ -126,6 +175,8 @@
                 }
                 $("#systemBookMarks").html(marksHtml);
 
+                $("#classificationChosen").html(getClassificationHtml(data.classifications));
+
                 setInterval(updateMarkInfo, 10000);
             }
         });
@@ -134,6 +185,30 @@
         $(window).on("resize", function(){
             $(".mk-thumb").height($(".mk-thumb > img:eq(0)").height())
         });
+    }
+
+    function getClassificationHtml(classifications)
+    {
+        var classificationHtml = "";
+        if (classifications) {
+            if (classifications.my) {
+                classificationHtml += '<optgroup label="我的分组">';
+                for(var index in classifications.my) {
+                    classificationHtml += '<option value="'+ classifications.my[index] + '">'+ classifications.my[index] + '</option>';
+                }
+                classificationHtml += '</optgroup>';
+            }
+
+            if (classifications.system) {
+                classificationHtml += '<optgroup label="系统分组">';
+                for(var index in classifications.system) {
+                    classificationHtml += '<option value="'+ classifications.system[index] + '">'+ classifications.system[index] + '</option>';
+                }
+                classificationHtml += '</optgroup>';
+            }
+        }
+
+        return classificationHtml;
     }
 
     function updateMarkInfo()
@@ -161,7 +236,10 @@
                     '<a class="lm-mark" target="_blank" href="/user/open?url=' + mark['url'] + '" title="' + (mark['title'] || defaultTitle) + '">' +
                         '<div class="mk-favicon"><img src="' + (mark['icon'] || defaultIcon) + '"></div>' +
                         '<div class="mk-title">' + (mark['title'] || defaultTitle) + '</div>' +
-                        '<div class="lm-icon-close mk-x" mark-id="' + mark['mark_uuid'] + '"></div>' +
+                        '<div class="mk-edit" mark-id="' + mark['mark_uuid'] + '">' +
+                            '<div class="mk-classification" selected-classification="' + mark['classification'] + '"></div>' +
+                            '<div class="lm-icon-close mk-x"></div>' +
+                        '</div>' +
                         '<div class="mk-thumb"><img src="' + (mark['screen_capture'] || defaultCapture) + '" /></div>' +
                     '</a>' +
                 '</li>';

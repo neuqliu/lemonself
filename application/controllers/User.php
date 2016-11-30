@@ -60,15 +60,18 @@ class User extends MY_Controller {
             $this->json_result_init();
 
             $mark_ids = $this->input->post('mark_ids', true);
-            $fields   = 'mark_uuid,url,icon,title,click_count,screen_capture';
+            $fields   = 'mark_uuid,url,icon,title,click_count,screen_capture,classification';
             $order_by = 'index ASC, updated_at DESC';
             if (is_null($mark_ids))
             {
                 $this->result['system_marks'] = $this->book_mark_model->get_all(array('is_recommend' => 1), 'uuid,url,icon,title,click_count,screen_capture', 'updated_at DESC');
+                $this->result['classifications']['system'] = $GLOBALS['mark_classification'];
                 $this->result['code'] = '200';
                 if (!is_null($this->user_id))
                 {
                     $this->result['marks'] = $this->user_mark_model->get_all(array('user_id' => $this->user_id, 'is_delete' => 0), $fields, $order_by);
+                    $my_classification     = $this->user_mark_model->get_all(array('user_id' => $this->user_id), 'classification', 'updated_at DESC');
+                    $this->result['classifications']['my'] = array_diff(array_column($my_classification, 'classification'), $this->result['classifications']['system']);
                 }
             }
             else
@@ -173,6 +176,29 @@ class User extends MY_Controller {
                     $this->user_model->feild_change('mark_count', array($this->db_uid => $this->user_id), '-1') && ($this->result['code'] = '200') &&
                     $this->book_mark_model->feild_change('mark_count', array('uuid' => $mark_uuid), '-1');
                 }
+            }
+
+            $this->json_result_echo();
+        }
+        else
+        {
+            show_error('拒绝访问！', 400, '瞎访问！');
+        }
+    }
+
+    public function mark_update()
+    {
+        if($_SERVER['REQUEST_METHOD'] == 'POST')
+        {
+            $this->json_result_init();
+
+            if (!is_null($this->user_id))
+            {
+                $mark_uuid      = $this->input->post('m_id', true);
+                $classification = $this->input->post('classification', true);
+                !empty($classification) &&
+                $this->user_mark_model->update_row(array('classification' => $classification), array('user_id' => $this->user_id, 'mark_uuid' => $mark_uuid)) &&
+                $this->result['code'] = '200';
             }
 
             $this->json_result_echo();

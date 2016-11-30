@@ -12,8 +12,9 @@
 <meta http-equiv="Cache-Control" content="no-siteapp" />
 <link rel="shortcut icon" href="/assets/img/favicon.ico">
 <link rel="stylesheet" href="/assets/third_party/amazeui/css/amazeui.min.css"/>
+<link rel="stylesheet" href="/assets/third_party/amazeui/css/amazeui.chosen.css">
 <link rel="stylesheet" href="/assets/css/main.css?r=<?= time(); ?>">
-<script>
+<!-- <script>
     var _hmt = _hmt || [];
     (function() {
         var hm = document.createElement("script");
@@ -21,4 +22,4 @@
         var s = document.getElementsByTagName("script")[0];
         s.parentNode.insertBefore(hm, s);
     })();
-</script>
+</script> -->

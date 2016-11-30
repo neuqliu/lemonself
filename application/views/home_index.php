@@ -17,22 +17,39 @@
                 <section>
                     <div class="lm-content lm-marks">
                         <ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-4" id="systemBookMarks">
-                            <!-- <li>
-                                <a class="lm-mark" target="_blank" href="/user/open?url=http://izsw.net" title="测试">
+                            <li>
+                                <a class="lm-mark" href="#" title="测试">
                                     <div class="mk-favicon"><img src="/tmp/icons/lemonself.ico"></div>
-                                    <div class="mk-title">测试测试，测试测试</div>
-                                    <div class="lm-icon-close mk-x" mark-id=""></div>
+                                    <div class="mk-title">测试测试，测试测试测试测试，测试测试测试测试，测试测试测试测试，测试测试</div>
+                                    <div class="mk-edit">
+                                        <div class="mk-classification" mark-id="" selected-classification="工具"></div>
+                                        <div class="lm-icon-close mk-x" mark-id=""></div>
+                                    </div>
                                     <div class="mk-thumb"><img src="/tmp/icons/lemonself.png" /></div>
                                 </a>
-                            </li> -->
+                            </li>
+                            <li>
+                                <a class="lm-mark" href="#" title="测试">
+                                    <div class="mk-favicon"><img src="/tmp/icons/lemonself.ico"></div>
+                                    <div class="mk-title">测试测试，测试测试测试测试，测试测试测试测试，测试测试测试测试，测试测试</div>
+                                    <div class="mk-edit" mark-id="">
+                                        <div class="mk-classification" selected-classification="前端"></div>
+                                        <div class="lm-icon-close mk-x"></div>
+                                    </div>
+                                    <div class="mk-thumb"><img src="/tmp/icons/lemonself.png" /></div>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </section>
             </div>
-            <div data-tab-panel-1 class="am-tab-panel ">
+            <div data-tab-panel-1 class="am-tab-panel">
                 <section>
                     <div class="lm-content lm-marks">
                         <ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-4" id="myBookMarks"></ul>
+                    </div>
+                    <div class="chosen-init">
+                        <select class="chosen-select-width classification-chosen" data-placeholder="选择分组" id="classificationChosen"></select>
                     </div>
                 </section>
             </div>

@@ -132,7 +132,7 @@ footer p{
 
 .lm-mark{
     cursor: pointer;
-    overflow: hidden;
+    /*overflow: hidden;*/
     position: relative;
     display: block;
     background-color: #f1f4f9;
@@ -175,8 +175,13 @@ footer p{
     outline: 2px solid #0099cc;
 }
 
-.lm-mark:hover .mk-x{
+.lm-mark:hover .mk-x,
+.lm-mark:hover .mk-classification{
     opacity: 1;
+}
+
+.lm-mark:hover .mk-edit{
+    background-color: #0099cc;
 }
 
 .mk-favicon img{
@@ -220,6 +225,40 @@ footer p{
     position: absolute;
 }
 
+.mk-edit{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 33px;
+    width: 100%;
+}
+
+.mk-classification{
+    position: absolute;
+    top: 0;
+    right: 35px;
+    width: 120px;
+    opacity: 0;
+    transition: opacity 150ms;
+    -webkit-transition: opacity 150ms;
+}
+
+.chosen-init{
+    display: none;
+}
+
+.mk-classification .chosen-container .chosen-single{
+    height: 30px;
+    line-height: 30px;
+    margin-top: 1px;
+}
+
+.mk-classification .chosen-container .chosen-single,
+.mk-classification .chosen-container .chosen-search > input,
+.mk-classification .chosen-container .chosen-drop{
+    border-color: #0099cc;
+}
+
 .mobile{
     width: 120px;
     height: 40px;
@@ -260,3 +299,4 @@ header select{
 .lm-qq-login img{
     max-height: 40px;
 }
+
