@@ -20,6 +20,7 @@
                 var paramsData = {"url": markUrl, 'classification': markClassification};
                 $.post("/user/mark/add", appendCsrf(paramsData), function(data){
                     $("input[name=newMarkUrl]").val("");
+                    $("#lmTabs li.lm-my-tab > a").trigger("click");
                     layer.closeAll();
                     updateCsrf(data.csrf);
                     if ("200" == data.code) {
@@ -169,11 +170,10 @@
     function getSystemMarkHtml(mark)
     {
         mark['screen_capture'] == "" && updateQueue.push(mark['uuid']);
-        return '<li id="li' +  mark['mark_uuid'] + '">' +
+        return '<li id="li' +  mark['uuid'] + '">' +
                     '<a class="lm-mark" target="_blank" href="/user/open?url=' + mark['url'] + '" title="' + (mark['title'] || defaultTitle) + '">' +
                         '<div class="mk-favicon"><img src="' + (mark['icon'] || defaultIcon) + '"></div>' +
                         '<div class="mk-title">' + (mark['title'] || defaultTitle) + '</div>' +
-                        '<div class="lm-icon-close mk-x" mark-id="' + mark['mark_uuid'] + '"></div>' +
                         '<div class="mk-thumb"><img src="' + (mark['screen_capture'] || defaultCapture) + '" /></div>' +
                     '</a>' +
                 '</li>';
