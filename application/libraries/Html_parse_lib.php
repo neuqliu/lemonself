@@ -12,43 +12,60 @@ class Html_parse_lib {
 
     function __construct($url)
     {
+        include_once constant("APPPATH").'third_party/simple_html_dom.php';
         $this->CI  =& get_instance();
 
         $this->url = $url;
+
+        $this->init();
     }
 
     public function parse_base_info()
     {
         set_time_limit(120);
 
-        $html_content = $this->CI->http_lib->get($this->url);
-        if (!empty($html_content))
+        if ($this->url !== '/')
         {
-            $titles = null;
-            $img_path = constant("APPPATH").'../tmp/icons/';
-            preg_match("/<title>(.+)<\/title>/is", $html_content, $titles);
-            !is_null($titles) && !empty($titles) && ($this->title = $titles[1]);
+            $this->init();
 
-            $url_info       = parse_url($this->url);
-            $icon_domain    = $url_info['scheme'].'://'.$url_info['host'];
-            $icon_url       = $icon_domain.'/favicon.ico';
-            $icon_img       = $this->CI->http_lib->get($icon_url);
-            $icon_name      = preg_replace('/:|\//', '_', $icon_domain);
-            $icon_full_name = $icon_name.'.ico';
-
-            @file_put_contents($img_path.$icon_full_name, $icon_img) > 0 &&
-            (image_type_to_mime_type(exif_imagetype($img_path.$icon_full_name)) == 'image/vnd.microsoft.icon') &&
-            ($this->icon = '/tmp/icons/'.$icon_full_name);
-
-            empty($this->icon) && ($icon_img = $this->CI->http_lib->get('https://www.google.com/s2/favicons?domain='.$icon_domain)) &&
-            @file_put_contents($img_path.$icon_full_name, $icon_img) > 0 &&
-            (image_type_to_mime_type(exif_imagetype($img_path.$icon_full_name)) == 'image/vnd.microsoft.icon') &&
-            ($this->icon = '/tmp/icons/'.$icon_full_name);
-
-            $cmd_str = 'wkhtmltoimage --width 1024 --height 600 --quality 1 '.$this->url.' '.$img_path.$icon_name.'.png';
-            @system($cmd_str, $result);
-            $capture_img = '/tmp/icons/'.$icon_name.'.png';
+            $capture_name = md5($this->url).'_capture.png';
+            $cmd_str      = 'wkhtmltoimage --width 1024 --height 600 --quality 1 '.$this->url.' '.constant("APPPATH").'../tmp/icons/'.$capture_name;
+            @system($cmd_str);
+            $capture_img = '/tmp/icons/'.$capture_name;
             file_exists(constant("APPPATH").'..'.$capture_img) && $this->screen_capture = $capture_img;
+        }
+    }
+
+    private function init()
+    {
+        if ($this->url !== '/')
+        {
+            $img_path = constant("APPPATH").'../tmp/icons/';
+            $html = file_get_html($this->url);
+            ($title = $html->find('title', -1)) && !is_null($title) && ($this->title = $title->innertext);
+
+            $icon_url = $html->find('link[rel="shortcut icon"]', -1);
+            is_null($icon_url) && $icon_url = $html->find('link[rel="icon"]', -1);
+            is_null($icon_url) && $icon_url = $html->find('link[rel="alternate icon"]', -1);
+            $url_info    = parse_url($this->url);
+            $icon_domain = $url_info['scheme'].'://'.$url_info['host'].'/';
+            if (!is_null($icon_url))
+            {
+                $icon_url = $icon_url->href;
+                !preg_match('/(((http|https):\/\/)|(\/\/))([a-zA-Z0-9_-]+\.)*/', $icon_url) && $icon_url = $icon_domain.$icon_url;
+                mb_strpos($icon_url, '//') === 0 && $icon_url = 'http:'.$icon_url;
+            }
+            else
+            {
+                $icon_url = $icon_domain.'favicon.ico';
+            }
+
+            $icon_img       = $this->CI->http_lib->get($icon_url);
+            $icon_full_name = md5($icon_url).'_favicon.ico';
+
+            @file_put_contents($img_path.$icon_full_name, $icon_img) > 0 &&
+            (mb_strpos(image_type_to_mime_type(exif_imagetype($img_path.$icon_full_name)), 'image') !== false) &&
+            ($this->icon = '/tmp/icons/'.$icon_full_name);
         }
     }
 

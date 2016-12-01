@@ -23,3 +23,5 @@ assets/img/logo_black64x64.png
 tmp/icons/https___www.baidu.com.ico
 tmp/icons/https___www.baidu.com.png
 /application/logs
+/tmp/icons
+/http___amazeui.org_.ico

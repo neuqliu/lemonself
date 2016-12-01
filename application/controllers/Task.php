@@ -8,11 +8,11 @@ class Task extends MY_Controller {
     function __construct()
     {
         parent::__construct();
-        require_once constant("APPPATH")."libraries/Html_parse_lib.php";
     }
 
     public function update_mark_info()
     {
+        require_once constant("APPPATH")."libraries/Html_parse_lib.php";
         set_time_limit(0);
 
         $update_queue = $this->update_queue_model->get_all(array('status' => 0), 'id,mark_uuid,mark_url,run_times,status', 'created_at', 0, 200);

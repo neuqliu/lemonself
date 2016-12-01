@@ -87,7 +87,7 @@
                     if ("200" == data.code) {
                         layer.msg('删除成功');
                         self.parent().addClass("opacity-hide");
-                        setTimeout(function(){self.parent().parent().remove();}, 1000);
+                        setTimeout(function(){self.parent().parent().parent().remove();}, 1000);
                     } else {
                         layer.msg(data.msg);
                     }

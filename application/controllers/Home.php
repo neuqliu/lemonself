@@ -27,25 +27,20 @@ class Home extends MY_Controller {
 
     public function test()
     {
-        require_once "LMAlgorithm.php";
+        // require_once "LMAlgorithm.php";
 
-        $test_data = [6, 5, 3, 1, 8, 7, 2, 4];
+        // $test_data = [6, 5, 3, 1, 8, 7, 2, 4];
 
-        $sort_data = LMAlgorithm\Sort::shell($test_data);
-        print_r($sort_data);
-        // set_time_limit(90);
-        // // $html_content = $this->http_lib->get('http://blog.csdn.net/isea533/article/details/44002219');
+        // $sort_data = LMAlgorithm\Sort::shell($test_data);
+        // print_r($sort_data);
 
-        // $html_content = file_get_contents(constant("APPPATH").'../tmp/icons/1.html');
-        // // @file_put_contents(constant("APPPATH").'../tmp/icons/1.html', $html_content);
+        require_once constant("APPPATH")."libraries/Html_parse_lib.php";
 
-        // if (!empty($html_content))
-        // {
-        //     $titles = null;
-        //     preg_match("/<title>(.+)<\/title>/is", $html_content, $titles);
-        //     var_dump($titles);
-        //     !is_null($titles) && !empty($titles) && ($this->title = $titles[1]);
-        // }
+        $html_parse = new Html_parse_lib('http://amazeui.org/getting-started');
+        // $html_parse->parse_base_info();
+
+        var_dump($html_parse->title);
+        var_dump($html_parse->icon);
     }
 
 }
