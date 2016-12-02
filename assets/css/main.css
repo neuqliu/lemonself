@@ -184,6 +184,11 @@ footer p{
     background-color: #0099cc;
 }
 
+.mk-favicon{
+    position: absolute;
+    z-index: 9;
+}
+
 .mk-favicon img{
     height: 16px;
     margin-top: -3px;
@@ -203,7 +208,7 @@ footer p{
 .mk-thumb{
     overflow: hidden;
     position: relative;
-    margin-top: 4px;
+    margin-top: 33px;
     height: 191px;
 }
 
